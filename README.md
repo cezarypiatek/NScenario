@@ -61,4 +61,4 @@ Benefits:
 
 ## Why not XBehave.net
 
-`xBehave.net` is the `XUnit` extension so it can be used only with XUnit based tests. In my opinion, it is also quite cryptic (string extension methods might not obvious) and a little bit over-complicated. **BUT THIS IS MY PERSONAL OPINION**
+[xBehave.net](https://github.com/adamralph/xbehave.net) is the `XUnit` extension so it can be used only with XUnit based tests. In my opinion, it is also quite cryptic (string extension methods might not obvious) and a little bit over-complicated. **BUT THIS IS MY PERSONAL OPINION**
