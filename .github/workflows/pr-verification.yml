@@ -16,6 +16,7 @@ jobs:
         SolutionPath: src\NScenario.sln
         Deterministic: true
         PackageReleaseNotes: 'https://github.com/${{ github.repository }}/releases'
+        ContinuousIntegrationBuild: true
     steps:
     - uses: actions/checkout@v2   
     - name: Setup .NET Core 5
