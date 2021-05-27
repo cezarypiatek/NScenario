@@ -53,7 +53,7 @@ SCENARIO: should activate community supporter license when eligible
 STEP 1: Import supporters
 STEP 2: Register purchase for supporter email
 STEP 3: Activate the license with supporter email
-STEP 4: Verify that license activated properly
+    STEP 3.1: Verify that license activated properly
 ```
 
 Benefits:
