@@ -10,7 +10,7 @@ namespace NScenario.Demo
         [Test]
         public async Task should_present_basic_scenario()
         {
-            var scenario = new TestScenario();
+            var scenario = TestScenarioFactory.Default();
 
             await scenario.Step("This is the first step", () =>
             {
@@ -31,7 +31,7 @@ namespace NScenario.Demo
         [Test]
         public async Task should_present_basic_scenario_with_steps_returning_value()
         {
-            var scenario = new TestScenario();
+            var scenario = TestScenarioFactory.Default();
 
             var valFromStep1 = await scenario.Step("This is the first step", () =>
             {
@@ -56,7 +56,7 @@ namespace NScenario.Demo
         [Test]
         public async Task should_present_scenario_with_sub_steps()
         {
-            var scenario = new TestScenario();
+            var scenario = TestScenarioFactory.Default();
 
             await scenario.Step("This is the first step", async () =>
             {
