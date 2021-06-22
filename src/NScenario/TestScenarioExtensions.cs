@@ -6,17 +6,17 @@ namespace NScenario
 {
     public static class TestScenarioExtensions
     {
-        public static async Task<T> Step<T>(this ITestScenario scenario, string description, Func<Task<T>> action, [CallerMemberName] string scenarioName = null)
+        public static async Task<T> Step<T>(this ITestScenario scenarioStepExecutor, string description, Func<Task<T>> action, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
         {
             T result = default(T);
-            await scenario.Step(description, async () => { result = await action(); }, scenarioName);
+            await scenarioStepExecutor.Step(description, async () => { result = await action(); }, filePath, methodName, lineNumber);
             return result;
         }
-        
-        public static async Task<T> Step<T>(this ITestScenario scenario, string description, Func<T> action, [CallerMemberName] string scenarioName = null)
+
+        public static async Task<T> Step<T>(this ITestScenario scenarioStepExecutor, string description, Func<T> action,  [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
         {
             T result = default(T);
-            await scenario.Step(description,  () => { result =  action(); }, scenarioName);
+            await scenarioStepExecutor.Step(description, () => { result = action(); }, filePath, methodName, lineNumber);
             return result;
         }
     }

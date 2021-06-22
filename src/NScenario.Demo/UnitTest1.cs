@@ -70,6 +70,16 @@ namespace NScenario.Demo
                 });
             });
             
+            await PerformReusableScenarioPart(scenario);
+            
+            await scenario.Step("This is the third step", () =>
+            {
+                // Here comes the logic
+            });
+        }
+
+        private static async Task PerformReusableScenarioPart(ITestScenario scenario)
+        {
             await scenario.Step("This is the second step", async () =>
             {
                 await scenario.Step("This is the first sub-step of second step", () =>
@@ -80,11 +90,6 @@ namespace NScenario.Demo
                 {
                     // Here comes the logic
                 });
-            });
-            
-            await scenario.Step("This is the third step", () =>
-            {
-                // Here comes the logic
             });
         }
     }
