@@ -6,7 +6,7 @@ namespace NScenario
 {
     public interface ITestScenario
     {
-        Task Step(string description, Func<Task> action, [CallerMemberName] string scenarioName = null);
-        Task Step(string description, Action action, [CallerMemberName] string scenarioName = null);
+        Task Step(string description, Func<Task> action, [CallerFilePath] string filePath = "",  [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0);
+        Task Step(string description, Action action, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0);
     }
 }
