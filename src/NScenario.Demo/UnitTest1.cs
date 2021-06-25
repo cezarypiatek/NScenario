@@ -45,7 +45,6 @@ namespace NScenario.Demo
                 await Task.Yield();
                 return valFromStep1 + 1;
             });
-            
             await scenario.Step("This is the third step", () =>
             {
                 // Here comes the logic
@@ -103,6 +102,7 @@ namespace NScenario.Demo
                 });
             });
         }
+
         private static Task<int> Sum(int a, int b)
         {
             return Task.FromResult(a + b);
