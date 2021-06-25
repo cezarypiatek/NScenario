@@ -19,5 +19,19 @@ namespace NScenario
             await scenarioStepExecutor.Step(description, () => { result = action(); }, filePath, methodName, lineNumber);
             return result;
         }
+
+        public static async Task<T> Step<T>(this ITestScenario scenarioStepExecutor, string description, Task<T> task,
+            [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            T result = default(T);
+            await scenarioStepExecutor.Step(description, async () => { result = await task; }, filePath, methodName, lineNumber);
+            return result;
+        }
+
+        public static async Task Step(this ITestScenario scenarioStepExecutor, string description, Task task,
+            [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            await scenarioStepExecutor.Step(description, async () => await task, filePath, methodName, lineNumber);
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace NScenario.Demo
                 await Task.Yield();
                 return valFromStep1 + 1;
             });
-
+            
             await scenario.Step("This is the third step", () =>
             {
                 // Here comes the logic
@@ -78,6 +78,17 @@ namespace NScenario.Demo
             });
         }
 
+        [Test]
+        public async Task should_be_able_to_use_tasks_without_function()
+        {
+            var scenario = TestScenarioFactory.Default();
+
+            await scenario.Step("This is step which waits for 100 ms", Task.Delay(100));
+
+            var x = await scenario.Step("This is step which uses Task with result", Sum(5, 10));
+            Assert.AreEqual(15, x);
+        }
+
         private static async Task PerformReusableScenarioPart(ITestScenario scenario)
         {
             await scenario.Step("This is the second step", async () =>
@@ -91,6 +102,10 @@ namespace NScenario.Demo
                     // Here comes the logic
                 });
             });
+        }
+        private static Task<int> Sum(int a, int b)
+        {
+            return Task.FromResult(a + b);
         }
     }
 }
