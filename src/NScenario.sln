@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NScenario", "NScenario\NScenario.csproj", "{7A203DDB-C009-4DF7-90B4-99E08B2BF6F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NScenario.Demo", "NScenario.Demo\NScenario.Demo.csproj", "{876814BE-F547-43C9-AB01-C79F2E17DE4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NScenario.Demo", "NScenario.Demo\NScenario.Demo.csproj", "{876814BE-F547-43C9-AB01-C79F2E17DE4A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NScenario.XunitTests", "NScenario.XUnitTests\NScenario.XUnitTests.csproj", "{397B190C-80CA-4173-8CA6-67CCA8800550}"
 EndProject
