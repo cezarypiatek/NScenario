@@ -27,7 +27,7 @@ namespace NScenario
             await _stepExecutor.Step(_scenarioName, description, action, context);
         }
 
-        public Task Step(string description, Action action, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
+        public async Task Step(string description, Action action, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "", [CallerLineNumber] int lineNumber = 0)
         {
             var context = new StepContext
             {
@@ -36,8 +36,7 @@ namespace NScenario
                 StepLineNumber = lineNumber,
                 StepMethodName = methodName
             };
-            _stepExecutor.Step(_scenarioName, description, action, context);
-            return Task.CompletedTask;
+            await _stepExecutor.Step(_scenarioName, description, action, context);
         }
     }
 }
