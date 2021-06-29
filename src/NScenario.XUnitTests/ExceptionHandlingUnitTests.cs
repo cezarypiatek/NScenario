@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Sdk;
 
-namespace NScenario.XUnitDemo
+namespace NScenario.XunitTests
 {
     public class ExceptionHandlingUnitTests
     {
@@ -13,7 +13,7 @@ namespace NScenario.XUnitDemo
         };
 
         [Fact]
-        public async Task XUnit_Assert_in_regular_step_action()
+        public async Task Xunit_Assert_in_regular_step_action()
         {
             var scenario = TestScenarioFactory.Default();
             await Assert.ThrowsAsync<TrueException>(async () => 
@@ -21,7 +21,7 @@ namespace NScenario.XUnitDemo
         }
 
         [Fact]
-        public async Task XUnit_Assert_in_async_step_action()
+        public async Task Xunit_Assert_in_async_step_action()
         {
             var scenario = TestScenarioFactory.Default();
             await Assert.ThrowsAsync<TrueException>(async () =>
