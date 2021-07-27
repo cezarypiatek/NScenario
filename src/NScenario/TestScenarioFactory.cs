@@ -8,7 +8,7 @@ namespace NScenario
     {
         public static ITestScenario Default(TextWriter outputWriter = null, string scenarioPrefix = null, string stepPrefix = null, [CallerMemberName] string testMethodName = "")
         {
-            var stepExecutor = BuildScenarioStepExecutor(outputWriter, scenarioPrefix, scenarioPrefix);
+            var stepExecutor = BuildScenarioStepExecutor(outputWriter, scenarioPrefix, stepPrefix);
             return new TestScenario(stepExecutor, testMethodName);
         }
 
