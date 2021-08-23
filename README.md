@@ -1,5 +1,7 @@
 # NScenario
 Dead simple, test framework independent, without any magic, a library for annotating steps of test case scenarios.
+Please read [Readable and clear tests for ASP.NET Core services](https://cezarypiatek.github.io/post/component-tests-scenarios/) article for better exaplanation and example use cases.
+
 
 ## How to install
 `NScenario` is distribute as a nuget package [NScenario](https://www.nuget.org/packages/NScenario/)
