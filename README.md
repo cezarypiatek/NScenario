@@ -72,11 +72,47 @@ Benefits:
 - Readable output that facilitates broken scenario investigation
 
 ## Console output
-Some test runners are hijacking console output and provide a custom stream for logging. By default `NScenario` is writing scenario description to the console, but this can be overridden by providing a custom `TextWriter` stream to `TestScenarioFactory.Default()` method. For example, in case of problems with `NUnit` you can initialize `TestScenario` as follows:
+Some test runners are hijacking console output and provide a custom stream for logging. By default `NScenario` is writing scenario description to the console, but this can be overridden by providing a custom `TextWriter` stream to `TestScenarioFactory.Default()` method. 
+
+### Example setup for `NUnit`
 
 ```cs
-var scenario = TestScenarioFactory.Default(TestContext.Out);
+public class MyTests
+{
+    [Test]
+    public void sample_test_case()
+    {
+        var scenario = TestScenarioFactory.Default(TestContext.Out);    
+    }
+}
 ```
+
+### Example setup for `XUnit`
+
+```cs
+
+public class XUnitOutputAdapter : TextWriter
+{
+    private readonly ITestOutputHelper _output;
+    public XUnitOutputAdapter(ITestOutputHelper output) => _output = output;
+    public override void WriteLine(string? value) => _output.WriteLine(value);
+    public override Encoding Encoding { get; }
+}
+
+public class MyTests
+{
+    private readonly ITestOutputHelper _output;
+    public MyTests(ITestOutputHelper output) => this._output = output;
+    
+    [Fact]
+    public void sample_test_case()
+    {
+        var scenario = TestScenarioFactory.Default(new XUnitOutputAdapter(_output));
+    }
+}
+```
+
+More info about [capturing console output in XUnit](https://xunit.net/docs/capturing-output)
 
 ## Test scenario description
 
