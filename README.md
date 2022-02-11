@@ -82,7 +82,7 @@ public class MyTests
     [Test]
     public void sample_test_case()
     {
-        var scenario = TestScenarioFactory.Default(TestContext.Out);    
+        var scenario = TestScenarioFactory.Default(TestContext.Progress);    
     }
 }
 ```
