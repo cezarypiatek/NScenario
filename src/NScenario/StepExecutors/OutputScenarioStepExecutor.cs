@@ -2,18 +2,24 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
+using NScenario.OutputWriters;
 
 namespace NScenario.StepExecutors
 {
     public class OutputScenarioStepExecutor : IScenarioStepExecutor
     {
-        private readonly TextWriter _outputWriter;
+        private readonly IScenarioOutputWriter _scenarioOutputWriter;
 
         private readonly ConcurrentDictionary<string, bool> _startedScenarios = new ConcurrentDictionary<string, bool>();
 
         public OutputScenarioStepExecutor(TextWriter outputWriter = null)
         {
-            _outputWriter = outputWriter ?? Console.Out;
+            _scenarioOutputWriter = new StreamScenarioOutputWriter(outputWriter ?? Console.Out);
+        }
+
+        public OutputScenarioStepExecutor(IScenarioOutputWriter scenarioOutputWriter)
+        {
+            _scenarioOutputWriter = scenarioOutputWriter;
         }
 
         public async Task Step(string scenarioName, string stepDescription, Func<Task> action, StepContext stepContext)
@@ -34,7 +40,7 @@ namespace NScenario.StepExecutors
 
         private void WriteStepDescription(string description)
         {
-            _outputWriter.WriteLine(description);
+            _scenarioOutputWriter.WriteStepDescription(description);
         }
 
         private void TryWriteScenarioTitle(string scenario)
@@ -42,8 +48,7 @@ namespace NScenario.StepExecutors
             if (_startedScenarios.TryAdd(scenario, true))
             {
                 var scenarioTitle = scenario.Replace("_", " ");
-                _outputWriter.WriteLine(scenarioTitle);
-                _outputWriter.WriteLine();
+                _scenarioOutputWriter.WriteScenarioTitle(scenarioTitle);
             }
         }
     }

@@ -64,9 +64,16 @@ namespace NScenario.Demo
                 {
                     // Here comes the logic
                 });
-                await scenario.Step("This is the second sub-step of first step", () =>
+                await scenario.Step("This is the second sub-step of first step", async () =>
                 {
-                    // Here comes the logic
+                    await scenario.Step("Yet another nesting level p1", () =>
+                    {
+                        // Here comes the logic
+                    });
+                    await scenario.Step("Yet another nesting level p2", () =>
+                    {
+                        // Here comes the logic
+                    });
                 });
             });
             
