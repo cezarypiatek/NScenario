@@ -16,6 +16,13 @@ namespace NScenario
             var stepExecutor = BuildScenarioStepExecutor(selectedOutputWriter, scenarioPrefix, stepPrefix);
             return new TestScenario(stepExecutor, testMethodName);
         }
+        
+        public static ITestScenario Default(IScenarioOutputWriter outputWriter, string scenarioPrefix = null, string stepPrefix = null, [CallerMemberName] string testMethodName = "")
+        {
+            var selectedOutputWriter = outputWriter;
+            var stepExecutor = BuildScenarioStepExecutor(selectedOutputWriter, scenarioPrefix, stepPrefix);
+            return new TestScenario(stepExecutor, testMethodName);
+        }
 
         private static IScenarioStepExecutor BuildScenarioStepExecutor(IScenarioOutputWriter scenarioOutputWriter, string scenarioPrefix = null, string stepPrefix = null)
         {
