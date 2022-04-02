@@ -28,6 +28,29 @@ namespace NScenario.Demo
             });
         }
         
+        
+
+        [Test] 
+        public async Task shouldPresentBASICScenarioWithCamelCaseTitle()
+        {
+            var scenario = TestScenarioFactory.Default();
+
+            await scenario.Step("This is the first step", () =>
+            {
+                // Here comes the logic
+            });
+            
+            await scenario.Step("This is the second step", () =>
+            {
+                // Here comes the logic
+            });
+            
+            await scenario.Step("This is the third step", () =>
+            {
+                // Here comes the logic
+            });
+        }
+        
         [TestCase(false)]
         [TestCase(true)]
         public async Task should_present_basic_scenario_with_explicit_title(bool someFlag)

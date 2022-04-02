@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NScenario.OutputWriters;
 
@@ -47,9 +49,11 @@ namespace NScenario.StepExecutors
         {
             if (_startedScenarios.TryAdd(scenario, true))
             {
-                var scenarioTitle = scenario.Replace("_", " ");
-                _scenarioOutputWriter.WriteScenarioTitle(scenarioTitle);
+                
+                _scenarioOutputWriter.WriteScenarioTitle(scenario);
             }
         }
+
+       
     }
 }
