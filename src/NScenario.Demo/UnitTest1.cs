@@ -28,6 +28,28 @@ namespace NScenario.Demo
             });
         }
         
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task should_present_basic_scenario_with_explicit_title(bool someFlag)
+        {
+            var scenario = TestScenarioFactory.Default(title: $"some scenario when flag set to '{someFlag}'");
+
+            await scenario.Step("This is the first step", () =>
+            {
+                // Here comes the logic
+            });
+            
+            await scenario.Step("This is the second step", () =>
+            {
+                // Here comes the logic
+            });
+            
+            await scenario.Step("This is the third step", () =>
+            {
+                // Here comes the logic
+            });
+        }
+        
         [Test]
         public async Task should_present_basic_scenario_with_steps_returning_value()
         {
