@@ -42,11 +42,15 @@ namespace NScenario
 
         private static readonly HashSet<string> ScenarioTitles = new HashSet<string>();
 
+        private static readonly object titleUniquenessLock = new object();
         private static void EnsureTestScenarioTitleUniqueness(string scenarioTitle)
         {
-            if (ScenarioTitles.Add(scenarioTitle) == false)
+            lock (titleUniquenessLock)
             {
-                throw new InvalidOperationException("Test scenario with a given title was already created. If you are using test method with parameters, please specify test scenario title explicitly by setting 'title' parameter.");
+                if (ScenarioTitles.Add(scenarioTitle) == false)
+                {
+                    throw new InvalidOperationException("Test scenario with a given title was already created. If you are using test method with parameters, please specify test scenario title explicitly by setting 'title' parameter.");
+                }
             }
         }
 
