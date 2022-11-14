@@ -11,6 +11,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>logo.jpg</PackageIcon>
     <LangVersion>8</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MarkdownSharp" Version="2.0.5" />
