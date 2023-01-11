@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using MarkdownSharp;
@@ -10,7 +11,7 @@ namespace NScenario.OutputWriters
     public class MarkdownFormatterOutputWriter: IScenarioOutputWriter
     {
         private readonly Func<string> _currentTestIdentifierAccessor;
-        private readonly Dictionary<string, StringBuilder> _outputBuilders = new Dictionary<string, StringBuilder>();
+        private readonly ConcurrentDictionary<string, StringBuilder> _outputBuilders = new ConcurrentDictionary<string, StringBuilder>();
 
         private StringBuilder OutputBuilder
         {
