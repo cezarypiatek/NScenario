@@ -16,14 +16,14 @@ namespace NScenario.StepExecutors
 
         public async Task Step(string scenarioName, string stepDescription, Func<Task> action, StepContext stepContext)
         {
-            using var level = _counter.StartLevel(stepContext.ScenarioName);
+            using var level = _counter.StartLevel();
             var decoratedDescription = DecorateDescription(stepDescription, level);
             await  _scenarioStepExecutorImplementation.Step(scenarioName, decoratedDescription, action, stepContext);
         }
 
         public async Task Step(string scenarioName, string stepDescription, Action action, StepContext stepContext)
         {
-            using var level = _counter.StartLevel(stepContext.ScenarioName);
+            using var level = _counter.StartLevel();
             var decoratedDescription = DecorateDescription(stepDescription, level);
             await  _scenarioStepExecutorImplementation.Step(scenarioName, decoratedDescription, action, stepContext);
         }
