@@ -10,6 +10,7 @@ namespace NScenario.OutputWriters
 {
     public class MarkdownFormatterOutputWriter: IScenarioOutputWriter
     {
+        private readonly string? _title;
         private readonly Func<string> _currentTestIdentifierAccessor;
         private readonly ConcurrentDictionary<string, StringBuilder> _outputBuilders = new ConcurrentDictionary<string, StringBuilder>();
 
@@ -34,11 +35,8 @@ namespace NScenario.OutputWriters
         /// <param name="currentTestIdentifierAccessor">Function that returns unique identifier representing currently executed scenario. Should be provided when tests are executed in parallel mode</param>
         public MarkdownFormatterOutputWriter(string? title = null, Func<string>? currentTestIdentifierAccessor = null)
         {
+            _title = title;
             _currentTestIdentifierAccessor = currentTestIdentifierAccessor ?? (() => "SHARED_ID");
-            if (title != null)
-            {
-                OutputBuilder.AppendLine($"# {title}");
-            }
         }
 
         public void WriteStepDescription(string description)
@@ -63,6 +61,10 @@ namespace NScenario.OutputWriters
         public string GetMarkdown()
         {
             var mergedMarkdown = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(_title) == false)
+            {
+                mergedMarkdown.AppendLine($"# {_title}");
+            }
             foreach (var builder in _outputBuilders.Values)
             {
                 mergedMarkdown.Append(builder.ToString());
