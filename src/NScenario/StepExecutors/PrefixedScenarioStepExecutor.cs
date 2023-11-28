@@ -9,7 +9,7 @@ namespace NScenario.StepExecutors
         private readonly string _stepPrefix;
         private readonly IScenarioStepExecutor _scenarioStepExecutorImplementation;
 
-        public PrefixedScenarioStepExecutor(IScenarioStepExecutor scenarioStepExecutorImplementation, string scenarioPrefix = null, string stepPrefix = null)
+        public PrefixedScenarioStepExecutor(IScenarioStepExecutor scenarioStepExecutorImplementation, string? scenarioPrefix = null, string? stepPrefix = null)
         {
             _scenarioStepExecutorImplementation = scenarioStepExecutorImplementation;
             _scenarioPrefix = scenarioPrefix ?? "SCENARIO";

@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using NScenario.OutputWriters;
 using NScenario.StepExecutors;
 using NUnit.Framework;
@@ -29,6 +30,9 @@ namespace NScenario.Demo
             _reportWriter.Save("Report.md");
             //INFO: Export the markdown to HTML file
             _reportWriter.ExportToHtml("Report.html");
+            
+            // INFO: Export nice html report
+            TestScenarioFactory.GetAllExecutedScenarios().SaveAsReport("AllReports.html");
         }
     }
 }

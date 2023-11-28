@@ -1,0 +1,322 @@
+[
+  {
+    "ScenarioTitle": "should collect info about exceptions",
+    "MethodName": "should_collect_info_about_exceptions",
+    "FilePath": "C:\\repos\\NScenario\\src\\UnitTest2.cs",
+    "LineNumber": 138,
+    "Status": 1,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 142,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0190945",
+        "Status": 2,
+        "Exception": null,
+        "SubSteps": [
+          {
+            "Description": "This is the first sub-step of first step",
+            "LineNumber": 144,
+            "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+            "ExecutionTime": "00:00:00.0011362",
+            "Status": 3,
+            "Exception": null,
+            "SubSteps": null
+          },
+          {
+            "Description": "This is the second sub-step of first step",
+            "LineNumber": 148,
+            "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+            "ExecutionTime": "00:00:00.0100732",
+            "Status": 2,
+            "Exception": null,
+            "SubSteps": [
+              {
+                "Description": "Yet another nesting level p1",
+                "LineNumber": 150,
+                "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+                "ExecutionTime": "00:00:00.0090506",
+                "Status": 2,
+                "Exception": "System.InvalidOperationException: Something wrong\r\n   at NScenario.Demo.Tests.<>c.<should_collect_info_about_exceptions>b__5_4() in C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs:line 152\r\n   at NScenario.StepExecutors.OutputScenarioStepExecutor.Step(String scenarioName, String stepDescription, Func`1 action, StepContext stepContext) in C:\\repos\\NScenario\\src\\NScenario\\StepExecutors\\OutputScenarioStepExecutor.cs:line 31\r\n   at NScenario.StepExecutors.LevelTrackingScenarioStepExecutor.Step(String scenarioName, String stepDescription, Func`1 action, StepContext stepContext) in C:\\repos\\NScenario\\src\\NScenario\\StepExecutors\\LevelTrackingScenarioStepExecutor.cs:line 21\r\n   at NScenario.StepExecutors.LevelTrackingScenarioStepExecutor.Step(String scenarioName, String stepDescription, Func`1 action, StepContext stepContext) in C:\\repos\\NScenario\\src\\NScenario\\StepExecutors\\LevelTrackingScenarioStepExecutor.cs:line 21\r\n   at NScenario.ScenarioInfoCollectorExecutor.Step(String scenarioName, String stepDescription, MaybeAsyncAction action, StepContext stepContext) in C:\\repos\\NScenario\\src\\NScenario\\ScenarioInfoCollectorExecutor.cs:line 61",
+                "SubSteps": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "some scenario when flag set to 'False'",
+    "MethodName": "should_present_basic_scenario_with_explicit_title",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 58,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 60,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0003793",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 65,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001727",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 70,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001519",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "some scenario when flag set to 'True'",
+    "MethodName": "should_present_basic_scenario_with_explicit_title",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 58,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 60,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0000399",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 65,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0000201",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 70,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0000520",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "should present basic scenario",
+    "MethodName": "should_present_basic_scenario",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 13,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 15,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0003591",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 20,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0092570",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 25,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0008134",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "should present basic scenario with steps returning value",
+    "MethodName": "should_present_basic_scenario_with_steps_returning_value",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 79,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 81,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0002627",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 87,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0041451",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 94,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001964",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "should Present BASIC Scenario With Camel Case Title",
+    "MethodName": "shouldPresentBASICScenarioWithCamelCaseTitle",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 36,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 38,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0002279",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 43,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001344",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 48,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001646",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "should present scenario with sub steps",
+    "MethodName": "should_present_scenario_with_sub_steps",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 104,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 106,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0025073",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": [
+          {
+            "Description": "This is the first sub-step of first step",
+            "LineNumber": 108,
+            "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+            "ExecutionTime": "00:00:00.0001351",
+            "Status": 3,
+            "Exception": null,
+            "SubSteps": null
+          },
+          {
+            "Description": "This is the second sub-step of first step",
+            "LineNumber": 112,
+            "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+            "ExecutionTime": "00:00:00.0012006",
+            "Status": 3,
+            "Exception": null,
+            "SubSteps": [
+              {
+                "Description": "Yet another nesting level p1",
+                "LineNumber": 114,
+                "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+                "ExecutionTime": "00:00:00.0001024",
+                "Status": 3,
+                "Exception": null,
+                "SubSteps": null
+              },
+              {
+                "Description": "Yet another nesting level p2",
+                "LineNumber": 118,
+                "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+                "ExecutionTime": "00:00:00.0000864",
+                "Status": 3,
+                "Exception": null,
+                "SubSteps": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 175,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0010105",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": [
+          {
+            "Description": "This is the first sub-step of second step",
+            "LineNumber": 177,
+            "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+            "ExecutionTime": "00:00:00.0000875",
+            "Status": 3,
+            "Exception": null,
+            "SubSteps": null
+          },
+          {
+            "Description": "This is the second sub-step of second step",
+            "LineNumber": 181,
+            "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+            "ExecutionTime": "00:00:00.0000664",
+            "Status": 3,
+            "Exception": null,
+            "SubSteps": null
+          }
+        ]
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 127,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0000586",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  }
+]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,20 +14,46 @@ namespace NScenario
     {
         public static IScenarioOutputWriter DefaultScenarioOutputWriter { get; set; } = new StreamScenarioOutputWriter(Console.Out);
 
-        public static ITestScenario Default(TextWriter outputWriter = null, string scenarioPrefix = null, string stepPrefix = null, [CallerMemberName] string testMethodName = "", string title = null)
+        private static readonly ConcurrentDictionary<string, TestScenario> Scenarios = new();
+        
+        public static IReadOnlyList<ScenarioInfo> GetAllExecutedScenarios()
+        {
+            return Scenarios.Values.Select(x => x.GetScenarioInfo()).ToArray();
+        }
+        
+        public static ITestScenario Default(TextWriter? outputWriter = null, string? scenarioPrefix = null,
+            string? stepPrefix = null, [CallerMemberName] string testMethodName = "", string? title = null,
+            [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
         {
             title ??= GenerateScenarioTitle(testMethodName);
             EnsureTestScenarioTitleUniqueness(title);
+            
             var selectedOutputWriter = outputWriter != null ? new StreamScenarioOutputWriter(outputWriter) : DefaultScenarioOutputWriter;
             var stepExecutor = BuildScenarioStepExecutor(selectedOutputWriter, scenarioPrefix, stepPrefix);
-            return new TestScenario(stepExecutor, title);
+            return Scenarios[title] = new TestScenario(stepExecutor, title, new ScenarioContext
+            {
+                Title = title,
+                FilePath = filePath,
+                MethodName = testMethodName,
+                LineNumber = lineNumber
+            });
         }
-        public static ITestScenario Default(IScenarioOutputWriter outputWriter, string scenarioPrefix = null, string stepPrefix = null, [CallerMemberName] string testMethodName = "", string title = null)
+        
+        public static ITestScenario Default(IScenarioOutputWriter outputWriter, string? scenarioPrefix = null,
+            string? stepPrefix = null, [CallerMemberName] string testMethodName = "", string? title = null,
+            [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
         {
             title ??= GenerateScenarioTitle(testMethodName);
+            EnsureTestScenarioTitleUniqueness(title);
             var selectedOutputWriter = outputWriter;
             var stepExecutor = BuildScenarioStepExecutor(selectedOutputWriter, scenarioPrefix, stepPrefix);
-            return new TestScenario(stepExecutor, title ?? testMethodName);
+            return Scenarios[title] = new TestScenario(stepExecutor, title, new ScenarioContext
+            {
+                Title = title,
+                FilePath = filePath,
+                MethodName = testMethodName,
+                LineNumber = lineNumber
+            });
         }
 
         private static readonly Regex InWordBreakPattern = new Regex("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])", RegexOptions.Compiled);
@@ -54,7 +81,7 @@ namespace NScenario
             }
         }
 
-        private static IScenarioStepExecutor BuildScenarioStepExecutor(IScenarioOutputWriter scenarioOutputWriter, string scenarioPrefix = null, string stepPrefix = null)
+        private static IScenarioStepExecutor BuildScenarioStepExecutor(IScenarioOutputWriter scenarioOutputWriter, string? scenarioPrefix = null, string? stepPrefix = null)
         {
             var stepExecutorBuilder = new DecoratorBuilder<IScenarioStepExecutor>();
             stepExecutorBuilder.WrapWith(_ => new OutputScenarioStepExecutor(scenarioOutputWriter));

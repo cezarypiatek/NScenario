@@ -15,5 +15,21 @@ namespace NScenario
         public string StepMethodName { get; set; }
         public string StepFilePath { get; set; }
         public int StepLineNumber { get; set; }
-    }
+        public string StepName { get; set; }
+   }
+   
+   public class ScenarioContext
+   {
+        public string Title { get; set; }
+        public string MethodName { get; set; }
+        public string FilePath { get; set; }
+        public int LineNumber { get; set; }
+        public ScenarioExecutionStatus ScenarioExecutionStatus { get; set; }
+   }
+
+   public enum ScenarioExecutionStatus
+   {
+       Success,
+       Failed
+   }
 }

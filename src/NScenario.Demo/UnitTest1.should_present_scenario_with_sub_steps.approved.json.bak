@@ -1,0 +1,93 @@
+﻿{
+  "ScenarioTitle": "should present scenario with sub steps",
+  "MethodName": "should_present_scenario_with_sub_steps",
+  "FilePath": "_IGNORED_VALUE_",
+  "LineNumber": 106,
+  "Status": 0,
+  "Steps": [
+    {
+      "Description": "This is the first step",
+      "LineNumber": 108,
+      "FilePath": "_IGNORED_VALUE_",
+      "ExecutionTime": "_IGNORED_VALUE_",
+      "Status": 3,
+      "Exception": null,
+      "SubSteps": [
+        {
+          "Description": "This is the first sub-step of first step",
+          "LineNumber": 110,
+          "FilePath": "_IGNORED_VALUE_",
+          "ExecutionTime": "_IGNORED_VALUE_",
+          "Status": 3,
+          "Exception": null,
+          "SubSteps": null
+        },
+        {
+          "Description": "This is the second sub-step of first step",
+          "LineNumber": 114,
+          "FilePath": "_IGNORED_VALUE_",
+          "ExecutionTime": "_IGNORED_VALUE_",
+          "Status": 3,
+          "Exception": null,
+          "SubSteps": [
+            {
+              "Description": "Yet another nesting level p1",
+              "LineNumber": 116,
+              "FilePath": "_IGNORED_VALUE_",
+              "ExecutionTime": "_IGNORED_VALUE_",
+              "Status": 3,
+              "Exception": null,
+              "SubSteps": null
+            },
+            {
+              "Description": "Yet another nesting level p2",
+              "LineNumber": 120,
+              "FilePath": "_IGNORED_VALUE_",
+              "ExecutionTime": "_IGNORED_VALUE_",
+              "Status": 3,
+              "Exception": null,
+              "SubSteps": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Description": "This is the second step",
+      "LineNumber": 180,
+      "FilePath": "_IGNORED_VALUE_",
+      "ExecutionTime": "_IGNORED_VALUE_",
+      "Status": 3,
+      "Exception": null,
+      "SubSteps": [
+        {
+          "Description": "This is the first sub-step of second step",
+          "LineNumber": 182,
+          "FilePath": "_IGNORED_VALUE_",
+          "ExecutionTime": "_IGNORED_VALUE_",
+          "Status": 3,
+          "Exception": null,
+          "SubSteps": null
+        },
+        {
+          "Description": "This is the second sub-step of second step",
+          "LineNumber": 186,
+          "FilePath": "_IGNORED_VALUE_",
+          "ExecutionTime": "_IGNORED_VALUE_",
+          "Status": 3,
+          "Exception": null,
+          "SubSteps": null
+        }
+      ]
+    },
+    {
+      "Description": "This is the third step",
+      "LineNumber": 129,
+      "FilePath": "_IGNORED_VALUE_",
+      "ExecutionTime": "_IGNORED_VALUE_",
+      "Status": 3,
+      "Exception": null,
+      "SubSteps": null
+    }
+  ]
+}

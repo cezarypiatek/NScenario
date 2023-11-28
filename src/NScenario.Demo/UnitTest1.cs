@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SmartAnalyzers.ApprovalTestsExtensions;
 
 namespace NScenario.Demo
 {
@@ -101,6 +102,7 @@ namespace NScenario.Demo
         [Test]
         public async Task should_present_scenario_with_sub_steps()
         {
+            var approver = new ExplicitApprover();
             var scenario = TestScenarioFactory.Default();
 
             await scenario.Step("This is the first step", async () =>
@@ -128,6 +130,55 @@ namespace NScenario.Demo
             {
                 // Here comes the logic
             });
+
+            approver.VerifyObject(scenario.GetScenarioInfo(), new []
+            {
+                "..FilePath",
+                "..ExecutionTime"
+            });
+        }
+        
+        [Test]
+        public async Task should_collect_info_about_exceptions()
+        {
+            var approver = new ExplicitApprover();
+            var scenario = TestScenarioFactory.Default();
+
+            try
+            {
+                await scenario.Step("This is the first step", async () =>
+                {
+                    await scenario.Step("This is the first sub-step of first step", () =>
+                    {
+                        // Here comes the logic
+                    });
+                    await scenario.Step("This is the second sub-step of first step", async () =>
+                    {
+                        await scenario.Step("Yet another nesting level p1", () =>
+                        {
+                            throw new InvalidOperationException("Something wrong");
+                        });
+                        await scenario.Step("Yet another nesting level p2", () =>
+                        {
+                            // Here comes the logic
+                        });
+                    });
+                });
+            
+            
+                await scenario.Step("This is the third step", () =>
+                {
+                    // Here comes the logic
+                });
+            }
+            catch
+            {
+                approver.VerifyObject(scenario.GetScenarioInfo(), new []
+                {
+                    "..FilePath",
+                    "..ExecutionTime"
+                });
+            }
         }
 
         private static async Task PerformReusableScenarioPart(ITestScenario scenario)
