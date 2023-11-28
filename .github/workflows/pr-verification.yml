@@ -3,8 +3,27 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
+  build-template-presenter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: src/nscenario-report-browser/
+
+      - name: Build
+        run: npm run build
+        working-directory: src/nscenario-report-browser/
+     
   build-extension:
     runs-on: windows-latest
+    needs: build-template-presenter
     env: 
         DOTNET_NOLOGO: true
         DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -18,11 +37,11 @@ jobs:
         PackageReleaseNotes: 'https://github.com/${{ github.repository }}/releases'
         ContinuousIntegrationBuild: true
     steps:
-    - uses: actions/checkout@v2   
-    - name: Setup .NET Core 5
+    - uses: actions/checkout@v3   
+    - name: Setup .NET Core 8
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0'   
+        dotnet-version: '8.0'   
     - name: Calculate next version
       uses: cezarypiatek/NextVersionGeneratorAction@0.4
       with:

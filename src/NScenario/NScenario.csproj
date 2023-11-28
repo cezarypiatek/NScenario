@@ -10,7 +10,7 @@
     <Description>Dead simple, test framework independent, without any magic, a library for annotating steps of test case scenarios.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>logo.jpg</PackageIcon>
-    <LangVersion>8</LangVersion>
+    <LangVersion>10</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
     <Nullable>enable</Nullable>
@@ -21,11 +21,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="logo.jpg">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+  <ItemGroup> 
+    <!--  Because inliner doesn work in GithubActions (missing TTY) we need to manually build the file and copy it here  -->
+    <!--  To build the report project use `npm build` and then `npm inline` -->
+    <EmbeddedResource Condition="Exists('report-browser-template.html')" Include="report-browser-template.html" />
   </ItemGroup>
 </Project>

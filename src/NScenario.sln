@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NScenario.Demo", "NScenario
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NScenario.XunitTests", "NScenario.XUnitTests\NScenario.XUnitTests.csproj", "{397B190C-80CA-4173-8CA6-67CCA8800550}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{75EF65F6-51EF-4D18-B0AC-7E5FF83F8C51}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\pr-verification.yml = ..\.github\workflows\pr-verification.yml
+		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

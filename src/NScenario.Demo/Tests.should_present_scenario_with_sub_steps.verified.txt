@@ -1,0 +1,77 @@
+﻿{
+  ScenarioTitle: should present scenario with sub steps,
+  MethodName: should_present_scenario_with_sub_steps,
+  FilePath: {ProjectDirectory}UnitTest1.cs,
+  LineNumber: 104,
+  Steps: [
+    {
+      Description: This is the first step,
+      LineNumber: 106,
+      FilePath: {ProjectDirectory}UnitTest1.cs,
+      ExecutionTime: 00:00:00.0014539,
+      Status: Success,
+      SubSteps: [
+        {
+          Description: This is the first sub-step of first step,
+          LineNumber: 108,
+          FilePath: {ProjectDirectory}UnitTest1.cs,
+          ExecutionTime: 00:00:00.0000699,
+          Status: Success
+        },
+        {
+          Description: This is the second sub-step of first step,
+          LineNumber: 112,
+          FilePath: {ProjectDirectory}UnitTest1.cs,
+          ExecutionTime: 00:00:00.0007161,
+          Status: Success,
+          SubSteps: [
+            {
+              Description: Yet another nesting level p1,
+              LineNumber: 114,
+              FilePath: {ProjectDirectory}UnitTest1.cs,
+              ExecutionTime: 00:00:00.0000587,
+              Status: Success
+            },
+            {
+              Description: Yet another nesting level p2,
+              LineNumber: 118,
+              FilePath: {ProjectDirectory}UnitTest1.cs,
+              ExecutionTime: 00:00:00.0000733,
+              Status: Success
+            }
+          ]
+        }
+      ]
+    },
+    {
+      Description: This is the second step,
+      LineNumber: 175,
+      FilePath: {ProjectDirectory}UnitTest1.cs,
+      ExecutionTime: 00:00:00.0008702,
+      Status: Success,
+      SubSteps: [
+        {
+          Description: This is the first sub-step of second step,
+          LineNumber: 177,
+          FilePath: {ProjectDirectory}UnitTest1.cs,
+          ExecutionTime: 00:00:00.0000749,
+          Status: Success
+        },
+        {
+          Description: This is the second sub-step of second step,
+          LineNumber: 181,
+          FilePath: {ProjectDirectory}UnitTest1.cs,
+          ExecutionTime: 00:00:00.0000440,
+          Status: Success
+        }
+      ]
+    },
+    {
+      Description: This is the third step,
+      LineNumber: 127,
+      FilePath: {ProjectDirectory}UnitTest1.cs,
+      ExecutionTime: 00:00:00.0000508,
+      Status: Success
+    }
+  ]
+}
