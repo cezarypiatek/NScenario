@@ -318,5 +318,77 @@
         "SubSteps": null
       }
     ]
+  },
+  {
+    "ScenarioTitle": "should Present BASIC Scenario With Camel Case Title 1",
+    "MethodName": "shouldPresentBASICScenarioWithCamelCaseTitle",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 36,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 38,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0002279",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 43,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001344",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 48,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001646",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
+  },
+  {
+    "ScenarioTitle": "should Present BASIC Scenario With Camel Case Title 2",
+    "MethodName": "shouldPresentBASICScenarioWithCamelCaseTitle",
+    "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+    "LineNumber": 36,
+    "Status": 0,
+    "Steps": [
+      {
+        "Description": "This is the first step",
+        "LineNumber": 38,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0002279",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the second step",
+        "LineNumber": 43,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001344",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      },
+      {
+        "Description": "This is the third step",
+        "LineNumber": 48,
+        "FilePath": "C:\\repos\\NScenario\\src\\NScenario.Demo\\UnitTest1.cs",
+        "ExecutionTime": "00:00:00.0001646",
+        "Status": 3,
+        "Exception": null,
+        "SubSteps": null
+      }
+    ]
   }
 ]
