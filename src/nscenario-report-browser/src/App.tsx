@@ -4,9 +4,7 @@ import './App.css';
 //import  data from "./scenarios.json"
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DataNode } from 'antd/es/tree';
-import {Affix,  Card, Col, Layout, Row, Space, Statistic, Timeline} from "antd";
-import {Content, Footer, Header } from 'antd/es/layout/layout';
-import Sider from 'antd/es/layout/Sider';
+import { Card, Col, Row, Space, Statistic, Timeline} from "antd";
 
 import {
     CheckCircleOutlined,
@@ -115,7 +113,7 @@ export function StatisticsCtr(props: {scenarios:Scenario[]}) {
   var success = props.scenarios.filter(value => value.Status === 0).length
   var failed = props.scenarios.filter(value => value.Status === 1).length
   return (
-      <Row gutter={16}>
+      <Row gutter={16} style={{width:"100%"}}>
         <Col span={8}>
           <Card bordered={false}>
             <Statistic
@@ -172,9 +170,9 @@ export function ScenarioTitleCtr(props: {data:Scenario}) {
         </div>
     );
 }
-export function ScenarioCtr(props: {data:Scenario}) {
+const ScenarioCtr = React.memo((props: {data:Scenario, isSelected:boolean}) =>{
   return (
-     <Card id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"auto"}}>
+     <Card   id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"auto", border: props.isSelected? "1px solid blue": "1px solid transparent",  transition: "border-color 0.5s ease" }}>
         <Timeline
 style={{paddingBottom:0}}
         mode={"left"}
@@ -185,7 +183,7 @@ style={{paddingBottom:0}}
         />
      </Card>
   );
-}
+});
 
 function generateTableOfContent(data:Scenario[])
 {
@@ -215,7 +213,7 @@ function App() {
 
     const [scenarioState, setScenarioState] = useState(scenarioData)
     const [treeState, setTreeState] = useState(treeData)
-
+    const [selectedScenario, setSelectedScenario] = useState("")
     useEffect( () => {
         (async ()=>{
             if(scenarioData.length === 0)
@@ -229,46 +227,35 @@ function App() {
     });
 
   return (
-    <div className="App" style={{textAlign:"left"}}>
-      <Layout hasSider>
-        <Sider
-            width={400}
-            style={{
-              overflow: 'auto',
-              height: '100vh',
-              position: 'fixed',
-              left: 0,
-              top: 0,
-              bottom: 0,
-              background:"white",
-              padding:20,
-              marginTop:20,
-                marginLeft:20,
-                borderRadius: 10
-            }}
-        >
-          <DirectoryTree multiple style={{width:"100%"}}  defaultExpandAll={true} treeData={treeState} onSelect={(key, a)=>{
-            if(a.node.isLeaf && a.node.title != null) {
+    <div className="App" style={{textAlign:"left", margin:0, padding:0}}>
+        <Row style={{height: "calc(100vh - 10px)", background: "#EFEFEF"}}>
+            <Col span={8}  style={{ height:"100%",  padding:"20px 0 20px 20px", overflowY:"scroll", overflowX:"hidden"}}>
+                <DirectoryTree  multiple   defaultExpandAll={true} treeData={treeState} onSelect={(key, a)=>{
+                    if(a.node.isLeaf && a.node.title != null) {
 
-              document.location = "#" + a.node.title.toString().replace(/\W+/g,"-")
-            }
-          }} />
-        </Sider>
-        <Layout className="site-layout" style={{ marginLeft: 420 }}>
-         <Affix>
-           <Header style={{ padding: 20, height:150, background:"#f5f5f5"}} >
-             <StatisticsCtr scenarios={scenarioData} />
-           </Header>
-         </Affix>
+                        document.location = "#" + a.node.title.toString().replace(/\W+/g,"-")
+                        setSelectedScenario(a.node.title.toString());
+                    }
+                }}
+                />
+            </Col>
+            <Col span={16} style={{height: "100%"}}>
+                <Row justify={"center"} style={{height: "150px", padding: "20px 20px 20px 10px"}}>
+                    <StatisticsCtr scenarios={scenarioData}  />
+                </Row>
+                <Row style={{ height:"calc(100% - 200px)", padding:"0px 20px 20px 20px", overflowY: "scroll"}}>
+                    <Space direction={"vertical"} size="middle" style={{ display: 'flex', width: "100%"}}>
+                        {scenarioState.map(value => <ScenarioCtr data={value} isSelected={selectedScenario === value.ScenarioTitle} />)}
+                    </Space>
+                </Row>
+                <Row align={"bottom"} style={{height:"50px", }}>
+                    <Col span={24} style={{textAlign:"center", padding: "20px"}}>
+                        <a href="https://github.com/cezarypiatek/NScenario" target="_blank" rel="noreferrer">NScenario</a> ©2023 Created by <a href="https://cezarypiatek.github.io/" target="_blank" rel="noreferrer">Cezary Piątek</a>
+                    </Col>
+                </Row>
+            </Col>
+        </Row>
 
-          <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-            <Space direction={"vertical"} size="middle" style={{ display: 'flex' }}>
-                    {scenarioState.map(value => <ScenarioCtr data={value} />)}
-            </Space>
-          </Content>
-            <Footer style={{ textAlign: 'center' }}><a href="https://github.com/cezarypiatek/NScenario" target="_blank" rel="noreferrer">NScenario</a> ©2023 Created by <a href="https://cezarypiatek.github.io/" target="_blank" rel="noreferrer">Cezary Piątek'</a></Footer>
-        </Layout>
-      </Layout>
     </div>
   );
 }
