@@ -152,6 +152,12 @@ export function StepCtr(props: {data:Step, prefix:string}) {
   return (
       <> <span style={{color:"blue"}}>Step {props.prefix}:</span> {`${props.data.Description}`}
 
+          {props.data.Exception != null && (
+              <pre style={{wordWrap: "break-word", whiteSpace: "pre-wrap", overflowX: "auto", padding:10, border: "1px solid red", borderRadius: 5}}><code>
+              {props.data.Exception}
+          </code></pre>
+          )}
+
         {props.data.SubSteps && <Timeline style={{marginTop:"10px", paddingBottom:0}}
             mode={"left"}
             items={ props.data.SubSteps.map((value, index) => ({

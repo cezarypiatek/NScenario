@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "inline": "inliner -nm --preserve-comments build/index.html > build/report-browser-template.html"
+    "inline": "inliner -nm --preserve-comments build/index.html > ../NScenario/report-browser-template.html"
   },
   "eslintConfig": {
     "extends": [
