@@ -15,3 +15,21 @@ code {
 {
   padding-bottom: 5px!important;
 }
+
+.filter-row .ant-card
+{
+  cursor: pointer;
+}
+.filter-row .ant-card.selected-filter
+{
+  border: 1px solid blue;
+}
+
+.App.filter-1 .scenario-1
+{
+  display: none;
+}
+.App.filter-2 .scenario-0
+{
+  display: none;
+}
