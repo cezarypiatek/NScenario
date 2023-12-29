@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 import './App.css';
 //import  data from "./scenarios.json"
@@ -10,6 +10,7 @@ import {
     CheckCircleOutlined,
     CloseCircleOutlined
 } from '@ant-design/icons';
+import {ICodeLocation, RepoPathResolver} from "./External";
 
 
 
@@ -149,8 +150,10 @@ export function StatisticsCtr(props: {scenarios:Scenario[]}) {
 }
 
 export function StepCtr(props: {data:Step, prefix:string}) {
+  const globalServices = useContext(GlobalServicesContext);
+  const scenarioFile = globalServices.pathResolver(props.data);
   return (
-      <> <span style={{color:"blue"}}>Step {props.prefix}:</span> {`${props.data.Description}`}
+      <> <span style={{color:"blue"}}>Step {props.prefix}:</span> <a href={scenarioFile} target="_blank" rel="noreferrer">{props.data.Description}</a>
 
           {props.data.Exception != null && (
               <pre style={{wordWrap: "break-word", whiteSpace: "pre-wrap", overflowX: "auto", padding:10, border: "1px solid red", borderRadius: 5}}><code>
@@ -169,16 +172,18 @@ export function StepCtr(props: {data:Step, prefix:string}) {
   );
 }
 export function ScenarioTitleCtr(props: {data:Scenario}) {
+    const globalServices = useContext(GlobalServicesContext);
+    const scenarioFile = globalServices.pathResolver(props.data);
     return (
         <div>
             <span style={{paddingRight: 10}}> {props.data.Status === 0 ? (<CheckCircleOutlined style={{color:"green"}} />) :<CloseCircleOutlined style={{color:"red"}} />}</span>
-            <span>{  `SCENARIO: ${props.data.ScenarioTitle}`}</span>
+            <span>SCENARIO: </span><span><a rel="noreferrer" href={scenarioFile} target="_blank">{props.data.ScenarioTitle}</a></span>
         </div>
     );
 }
 const ScenarioCtr = React.memo((props: {data:Scenario, isSelected:boolean}) =>{
   return (
-     <Card   id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"auto", border: props.isSelected? "1px solid blue": "1px solid transparent",  transition: "border-color 0.5s ease" }}>
+     <Card  id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"auto", border: props.isSelected? "1px solid blue": "1px solid transparent",  transition: "border-color 0.5s ease" }}>
         <Timeline
 style={{paddingBottom:0}}
         mode={"left"}
@@ -198,42 +203,70 @@ function generateTableOfContent(data:Scenario[])
     return createDirectoryTree(data, rootDir);
 }
 
-function retriveData(): Scenario[]
+function retrieveData(): INScenarioData
 {
     const dataStorage = document.getElementById('ScenarioData') as HTMLElement;
     if(dataStorage!=null && dataStorage.innerText.trim().length >0)
     {
         try {
-            return JSON.parse(dataStorage.innerText) as Scenario[];
+            return JSON.parse(dataStorage.innerText) as INScenarioData;
         }catch
         {
-            return [];
         }
     }
-    return [];
+    return {
+        SourceControlInfo: {Revision: null, RepositoryUrl: null, RepositoryRootDir: null},
+        Scenarios: []
+    };
 }
 
-function App() {
-    const scenarioData = retriveData();
-    const treeData = generateTableOfContent(scenarioData);
+interface ISourceControlInfo
+{
+    RepositoryUrl:string | null,
+    Revision:string | null,
+    RepositoryRootDir:string | null
+}
 
-    const [scenarioState, setScenarioState] = useState(scenarioData)
+interface INScenarioData
+{
+    SourceControlInfo: ISourceControlInfo,
+    Scenarios: Scenario[]
+}
+
+interface GlobalServices{
+    pathResolver: ((location: ICodeLocation) => string)
+}
+
+const GlobalServicesContext = React.createContext<GlobalServices>({pathResolver: (location)=> location.FilePath })
+
+
+function App() {
+    const scenarioData = retrieveData();
+    const treeData = generateTableOfContent(scenarioData.Scenarios);
+
+    const [scenarioState, setScenarioState] = useState(scenarioData.Scenarios)
     const [treeState, setTreeState] = useState(treeData)
     const [selectedScenario, setSelectedScenario] = useState("")
+    const [sourceControlState, setSourceControlState] = useState(scenarioData.SourceControlInfo)
+
+    let pathResolver = RepoPathResolver.TryToGetPathBuilder(sourceControlState, sourceControlState.RepositoryRootDir)
+
     useEffect( () => {
         (async ()=>{
-            if(scenarioData.length === 0)
+            if(scenarioData.Scenarios.length === 0)
             {
                 const response = await fetch("/scenarios.json")
-                const sampleData = await  response.json();
-                setScenarioState(sampleData as Scenario[])
-                setTreeState(generateTableOfContent(sampleData))
+                const sampleData : INScenarioData = await  response.json();
+                setScenarioState(sampleData.Scenarios);
+                setSourceControlState(sampleData.SourceControlInfo);
+                setTreeState(generateTableOfContent(sampleData.Scenarios))
             }
         })()
     });
 
   return (
     <div className="App" style={{textAlign:"left", margin:0, padding:0}}>
+        <GlobalServicesContext.Provider value={{pathResolver: pathResolver}}>
         <Row style={{height: "calc(100vh - 10px)", background: "#EFEFEF"}}>
             <Col span={8}  style={{ height:"100%",  padding:"20px 0 20px 20px", overflowY:"scroll", overflowX:"hidden"}}>
                 <DirectoryTree  multiple   defaultExpandAll={true} treeData={treeState} onSelect={(key, a)=>{
@@ -247,7 +280,7 @@ function App() {
             </Col>
             <Col span={16} style={{height: "100%"}}>
                 <Row justify={"center"} style={{height: "150px", padding: "20px 20px 20px 10px"}}>
-                    <StatisticsCtr scenarios={scenarioData}  />
+                    <StatisticsCtr scenarios={scenarioState}  />
                 </Row>
                 <Row style={{ height:"calc(100% - 200px)", padding:"0px 20px 20px 20px", overflowY: "scroll"}}>
                     <Space direction={"vertical"} size="middle" style={{ display: 'flex', width: "100%"}}>
@@ -261,7 +294,7 @@ function App() {
                 </Row>
             </Col>
         </Row>
-
+        </GlobalServicesContext.Provider>
     </div>
   );
 }
