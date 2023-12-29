@@ -1,10 +1,10 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import './App.css';
 //import  data from "./scenarios.json"
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DataNode } from 'antd/es/tree';
-import { Card, Col, Row, Space, Statistic, Timeline} from "antd";
+import { Card, Col, Row, Statistic, Timeline} from "antd";
 
 import {
     CheckCircleOutlined,
@@ -108,15 +108,27 @@ function findLongestCommonPrefix(strings: string[]): string {
   return prefix;
 }
 
+enum TestResultType{
+    All,
+    Success,
+    Failed
+}
+
+export function StatisticsCtr(props: {scenarios:Scenario[], onSetFilter: (type:TestResultType) => void }) {
+  var success = props.scenarios.filter(value => value.Status === 0).length;
+  var failed = props.scenarios.filter(value => value.Status === 1).length;
+  const [typeState, setTypeState] = useState(TestResultType.All)
+  const setFilter = (type:TestResultType) => {
+    type = typeState === type? TestResultType.All: type;
+    props.onSetFilter(type);
+    setTypeState(type);
+  };
 
 
-export function StatisticsCtr(props: {scenarios:Scenario[]}) {
-  var success = props.scenarios.filter(value => value.Status === 0).length
-  var failed = props.scenarios.filter(value => value.Status === 1).length
   return (
-      <Row gutter={16} style={{width:"100%"}}>
+      <Row gutter={16} style={{width:"100%"}} className="filter-row">
         <Col span={8}>
-          <Card bordered={false}>
+          <Card bordered={false} onClick={()=> setFilter(TestResultType.All)} className={typeState === TestResultType.All ? "selected-filter":""}>
             <Statistic
                 title="Total"
                 value={props.scenarios.length}
@@ -126,7 +138,7 @@ export function StatisticsCtr(props: {scenarios:Scenario[]}) {
           </Card>
         </Col>
         <Col span={8}>
-          <Card bordered={false}>
+          <Card bordered={false} onClick={()=> setFilter(TestResultType.Success)} className={typeState === TestResultType.Success ? "selected-filter":""}>
             <Statistic
                 title="Success"
                 value={success}
@@ -136,7 +148,7 @@ export function StatisticsCtr(props: {scenarios:Scenario[]}) {
           </Card>
         </Col>
         <Col span={8}>
-          <Card bordered={false}>
+          <Card bordered={false} onClick={()=> setFilter(TestResultType.Failed)} className={typeState === TestResultType.Failed ? "selected-filter":""}>
             <Statistic
                 title="Failed"
                 value={failed}
@@ -183,7 +195,7 @@ export function ScenarioTitleCtr(props: {data:Scenario}) {
 }
 const ScenarioCtr = React.memo((props: {data:Scenario, isSelected:boolean}) =>{
   return (
-     <Card  id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"auto", border: props.isSelected? "1px solid blue": "1px solid transparent",  transition: "border-color 0.5s ease" }}>
+     <Card className={`scenario-${props.data.Status}`}  id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"100%", border: props.isSelected? "1px solid blue": "1px solid transparent",  transition: "border-color 0.5s ease", marginBottom: "20px" }}>
         <Timeline
 style={{paddingBottom:0}}
         mode={"left"}
@@ -248,7 +260,7 @@ function App() {
     const [treeState, setTreeState] = useState(treeData)
     const [selectedScenario, setSelectedScenario] = useState("")
     const [sourceControlState, setSourceControlState] = useState(scenarioData.SourceControlInfo)
-
+    const [typeState, setTypeState] = useState(TestResultType.All)
     let pathResolver = RepoPathResolver.TryToGetPathBuilder(sourceControlState, sourceControlState.RepositoryRootDir)
 
     useEffect( () => {
@@ -265,7 +277,7 @@ function App() {
     });
 
   return (
-    <div className="App" style={{textAlign:"left", margin:0, padding:0}}>
+    <div className={`App filter-${typeState}`} style={{textAlign:"left", margin:0, padding:0}}>
         <GlobalServicesContext.Provider value={{pathResolver: pathResolver}}>
         <Row style={{height: "calc(100vh - 10px)", background: "#EFEFEF"}}>
             <Col span={8}  style={{ height:"100%",  padding:"20px 0 20px 20px", overflowY:"scroll", overflowX:"hidden"}}>
@@ -280,12 +292,10 @@ function App() {
             </Col>
             <Col span={16} style={{height: "100%"}}>
                 <Row justify={"center"} style={{height: "150px", padding: "20px 20px 20px 10px"}}>
-                    <StatisticsCtr scenarios={scenarioState}  />
+                    <StatisticsCtr scenarios={scenarioState}  onSetFilter={type => { setTypeState(type) }} />
                 </Row>
                 <Row style={{ height:"calc(100% - 200px)", padding:"0px 20px 20px 20px", overflowY: "scroll"}}>
-                    <Space direction={"vertical"} size="middle" style={{ display: 'flex', width: "100%"}}>
-                        {scenarioState.map(value => <ScenarioCtr data={value} isSelected={selectedScenario === value.ScenarioTitle} />)}
-                    </Space>
+                    {scenarioState.map(value => <ScenarioCtr data={value} isSelected={selectedScenario === value.ScenarioTitle} />)}
                 </Row>
                 <Row align={"bottom"} style={{height:"50px", }}>
                     <Col span={24} style={{textAlign:"center", padding: "20px"}}>
