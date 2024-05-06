@@ -88,6 +88,7 @@ namespace NScenario
             stepExecutorBuilder.WrapWith(u => new IndentionScenarioStepExecutor(u));
             stepExecutorBuilder.WrapWith(u => new PrefixedScenarioStepExecutor(u, scenarioPrefix, stepPrefix));
             stepExecutorBuilder.WrapWith(u => new OrderedScenarioStepExecutor(u));
+            stepExecutorBuilder.WrapWith(u => new InstrumentationScenarioStepExecutor (u));
             var stepExecutor = stepExecutorBuilder.Build();
             return stepExecutor;
         }
