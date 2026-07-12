@@ -166,16 +166,61 @@ export function StatisticsCtr(props: {scenarios:Scenario[], type: TestResultType
   );
 }
 
-export function StepCtr(props: {data:Step, prefix:string}) {
+export function TimelineBar(props: {executionTimeMs: number, startTimeMs: number, totalDurationMs: number, status: number}) {
+  if (!props.executionTimeMs || !props.totalDurationMs) return null;
+  
+  const startPercentage = (props.startTimeMs / props.totalDurationMs) * 100;
+  const widthPercentage = (props.executionTimeMs / props.totalDurationMs) * 100;
+  const barColor = props.status === 3 ? '#52c41a' : '#ff4d4f';
+  
+  return (
+      <div className="timeline-bar-container" title={`Start: ${props.startTimeMs.toFixed(2)}ms, Duration: ${props.executionTimeMs.toFixed(2)}ms`}>
+        <div className="timeline-bar-background">
+          <div 
+            className="timeline-bar-fill" 
+            style={{
+              marginLeft: `${startPercentage}%`,
+              width: `${widthPercentage}%`,
+              backgroundColor: barColor
+            }}
+          />
+        </div>
+      </div>
+  );
+}
+
+export function StepCtr(props: {data:Step, prefix:string, startTimeMs?: number, totalDurationMs?: number}) {
   const globalServices = useContext(GlobalServicesContext);
   const scenarioFile = globalServices.pathResolver(props.data);
   const executionTime = formatExecutionTime(props.data.ExecutionTime);
+  const executionTimeMs = parseExecutionTimeToMs(props.data.ExecutionTime);
+  
+  // Calculate cumulative start times and total duration for substeps
+  let cumulativeTime = 0;
+  const subStepTimings = props.data.SubSteps?.map(step => {
+    const stepTime = parseExecutionTimeToMs(step.ExecutionTime);
+    const timing = { startTime: cumulativeTime, duration: stepTime };
+    cumulativeTime += stepTime;
+    return timing;
+  }) || [];
+  
+  const totalSubStepsDuration = cumulativeTime;
+  
   return (
       <div className="step-content">
         <div className="step-heading">
           <span><span className="step-number">Step {props.prefix}:</span> <a href={scenarioFile} target="_blank" rel="noreferrer">{props.data.Description}</a></span>
           {executionTime && <span className="execution-time" title={`Execution time: ${props.data.ExecutionTime}`}><ClockCircleOutlined /> {executionTime}</span>}
         </div>
+
+        {props.startTimeMs !== undefined && props.totalDurationMs && executionTimeMs > 0 && (
+          <TimelineBar 
+            executionTimeMs={executionTimeMs} 
+            startTimeMs={props.startTimeMs}
+            totalDurationMs={props.totalDurationMs} 
+            status={props.data.Status}
+          />
+        )}
 
           {props.data.Exception != null && (
               <pre className="exception-block"><code>
@@ -187,11 +232,28 @@ export function StepCtr(props: {data:Step, prefix:string}) {
             mode={"left"}
             items={ props.data.SubSteps.map((value, index) => ({
                 dot: value.Status === 3 ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
-                children: (<StepCtr data={value} prefix={`${props.prefix}.${index+1}`} />)}))
+                children: (<StepCtr 
+                  data={value} 
+                  prefix={`${props.prefix}.${index+1}`} 
+                  startTimeMs={subStepTimings[index].startTime}
+                  totalDurationMs={totalSubStepsDuration}
+                />)}))
             }
         />}
       </div>
   );
+}
+
+function parseExecutionTimeToMs(value: string): number {
+  if (!value) return 0;
+
+  const parts = value.split(':');
+  if (parts.length !== 3) return 0;
+
+  const totalSeconds = Number(parts[0]) * 3600 + Number(parts[1]) * 60 + Number(parts[2]);
+  if (!Number.isFinite(totalSeconds)) return 0;
+  
+  return totalSeconds * 1000; // Convert to milliseconds
 }
 
 function formatExecutionTime(value: string): string {
@@ -223,6 +285,17 @@ export function ScenarioTitleCtr(props: {data:Scenario}) {
     );
 }
 const ScenarioCtr = React.memo((props: {data:Scenario, isSelected:boolean}) =>{
+  // Calculate cumulative start times and total duration for all steps
+  let cumulativeTime = 0;
+  const stepTimings = props.data.Steps.map(step => {
+    const stepTime = parseExecutionTimeToMs(step.ExecutionTime);
+    const timing = { startTime: cumulativeTime, duration: stepTime };
+    cumulativeTime += stepTime;
+    return timing;
+  });
+  
+  const totalScenarioDuration = cumulativeTime;
+    
   return (
      <Card className={`scenario-card scenario-${props.data.Status}${props.isSelected ? " scenario-selected" : ""}`} id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )}>
         <Timeline
@@ -230,7 +303,12 @@ style={{paddingBottom:0}}
         mode={"left"}
         items={ props.data.Steps.map((value, index) => ({
             dot: value.Status === 3 ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
-            children: (<StepCtr data={value} prefix={`${index+1}`} />)}))
+            children: (<StepCtr 
+              data={value} 
+              prefix={`${index+1}`} 
+              startTimeMs={stepTimings[index].startTime}
+              totalDurationMs={totalScenarioDuration}
+            />)}))
         }
         />
      </Card>
