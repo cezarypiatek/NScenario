@@ -10,7 +10,10 @@ import {
     CheckCircleOutlined,
     ClockCircleOutlined,
     CloseCircleOutlined,
-    SearchOutlined
+    SearchOutlined,
+    FileTextOutlined,
+    CheckSquareOutlined,
+    CloseSquareOutlined
 } from '@ant-design/icons';
 import {ICodeLocation, RepoPathResolver} from "./External";
 
@@ -135,7 +138,7 @@ export function StatisticsCtr(props: {scenarios:Scenario[], type: TestResultType
         <Col span={8}>
           <Card bordered={false} onClick={()=> setFilter(TestResultType.All)} className={props.type === TestResultType.All ? "selected-filter":""}>
             <Statistic
-                title="Total"
+                title={<><FileTextOutlined style={{marginRight: 4}} /> Total</>}
                 value={props.scenarios.length}
                 precision={0}
                 valueStyle={{ color: '#344054' }}
@@ -145,7 +148,7 @@ export function StatisticsCtr(props: {scenarios:Scenario[], type: TestResultType
         <Col span={8}>
           <Card bordered={false} onClick={()=> setFilter(TestResultType.Success)} className={props.type === TestResultType.Success ? "selected-filter":""}>
             <Statistic
-                title="Success"
+                title={<><CheckSquareOutlined style={{marginRight: 4}} /> Success</>}
                 value={success}
                 precision={0}
                 valueStyle={{ color: '#15803d' }}
@@ -155,7 +158,7 @@ export function StatisticsCtr(props: {scenarios:Scenario[], type: TestResultType
         <Col span={8}>
           <Card bordered={false} onClick={()=> setFilter(TestResultType.Failed)} className={props.type === TestResultType.Failed ? "selected-filter":""}>
             <Statistic
-                title="Failed"
+                title={<><CloseSquareOutlined style={{marginRight: 4}} /> Failed</>}
                 value={failed}
                 precision={0}
                 valueStyle={{ color: '#b42318' }}
@@ -418,8 +421,11 @@ function App() {
                 {treeState.length > 0 ? <DirectoryTree className="test-tree" multiple defaultExpandAll={true} treeData={treeState} onSelect={(key, a)=>{
                     const scenarioTitle = (a.node as ScenarioTreeNode).scenarioTitle;
                     if(a.node.isLeaf && scenarioTitle) {
-
-                        document.location = "#" + scenarioTitle.replace(/\W+/g,"-")
+                        const elementId = scenarioTitle.replace(/\W+/g,"-");
+                        const element = document.getElementById(elementId);
+                        if(element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
                         setSelectedScenario(scenarioTitle);
                     }
                 }}
@@ -428,7 +434,7 @@ function App() {
             <Col span={16} className="details-panel">
                 <Row className="report-list" style={{ height:"calc(100% - 50px)", padding:"20px", overflowY: "scroll"}}>
                     {filteredScenarios.length > 0
-                        ? filteredScenarios.map(value => <ScenarioCtr key={`${value.FilePath}-${value.MethodName}`} data={value} isSelected={selectedScenario === value.ScenarioTitle} />)
+                        ? filteredScenarios.map(value => <ScenarioCtr key={value.ScenarioTitle} data={value} isSelected={selectedScenario === value.ScenarioTitle} />)
                         : <Empty className="report-empty" description={searchQuery.trim() ? "No scenarios match your search" : "No tests match this filter"} />}
                 </Row>
                 <Row align={"bottom"} style={{height:"50px", }}>
