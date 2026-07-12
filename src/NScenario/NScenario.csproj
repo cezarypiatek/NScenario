@@ -32,7 +32,7 @@
   </ItemGroup>
   <ItemGroup> 
     <!--  Because inliner doesn work in GithubActions (missing TTY) we need to manually build the file and copy it here  -->
-    <!--  To build the report project use `npm build` and then `npm inline` -->
+    <!--  To build the report project use `npm run build` and then `npm run inline` -->
     <EmbeddedResource Condition="Exists('report-browser-template.html')" Include="report-browser-template.html" />
   </ItemGroup>
 </Project>

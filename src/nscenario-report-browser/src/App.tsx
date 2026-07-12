@@ -1,14 +1,16 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import './App.css';
 //import  data from "./scenarios.json"
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DataNode } from 'antd/es/tree';
-import { Card, Col, Row, Statistic, Timeline} from "antd";
+import { Card, Col, Empty, Input, Row, Statistic, Timeline} from "antd";
 
 import {
     CheckCircleOutlined,
-    CloseCircleOutlined
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    SearchOutlined
 } from '@ant-design/icons';
 import {ICodeLocation, RepoPathResolver} from "./External";
 
@@ -54,6 +56,10 @@ function getDirectoryPath(filePath:string) {
   return normalizedPath.substring(0, lastSlashIndex);
 }
 
+interface ScenarioTreeNode extends DataNode {
+  scenarioTitle?: string;
+}
+
 function createDirectoryTree(scenarios: Scenario[], prefix: string): DataNode[] {
   const root: DataNode[] = [];
   scenarios.forEach(scenario => {
@@ -82,13 +88,14 @@ function createDirectoryTree(scenarios: Scenario[], prefix: string): DataNode[] 
     }
 
     // Add ScenarioTitle as a child of the file node, if it doesn't already exist
-    if (!fileNode.children!.some(child => child.title === scenario.ScenarioTitle)) {
+    if (!fileNode.children!.some(child => (child as ScenarioTreeNode).scenarioTitle === scenario.ScenarioTitle)) {
       fileNode.children!.push({
-          title: scenario.ScenarioTitle,
+          title: <span className="scenario-tree-result"><span>{scenario.ScenarioTitle}</span><small>Method: {scenario.MethodName}</small></span>,
           key: `${fileNode.key}/${scenario.ScenarioTitle}`,
+          scenarioTitle: scenario.ScenarioTitle,
           isLeaf: true,
-          icon: scenario.Status === 0 ? (<CheckCircleOutlined style={{color:"green"}} />) :<CloseCircleOutlined style={{color:"red"}} />
-      });
+          icon: scenario.Status === 0 ? <CheckCircleOutlined /> : <CloseCircleOutlined />
+      } as ScenarioTreeNode);
     }
   });
 
@@ -114,46 +121,44 @@ enum TestResultType{
     Failed
 }
 
-export function StatisticsCtr(props: {scenarios:Scenario[], onSetFilter: (type:TestResultType) => void }) {
+export function StatisticsCtr(props: {scenarios:Scenario[], type: TestResultType, onSetFilter: (type:TestResultType) => void }) {
   var success = props.scenarios.filter(value => value.Status === 0).length;
   var failed = props.scenarios.filter(value => value.Status === 1).length;
-  const [typeState, setTypeState] = useState(TestResultType.All)
   const setFilter = (type:TestResultType) => {
-    type = typeState === type? TestResultType.All: type;
+    type = props.type === type && type !== TestResultType.All ? TestResultType.All : type;
     props.onSetFilter(type);
-    setTypeState(type);
   };
 
 
   return (
-      <Row gutter={16} style={{width:"100%"}} className="filter-row">
+      <Row gutter={8} style={{width:"100%"}} className="filter-row">
         <Col span={8}>
-          <Card bordered={false} onClick={()=> setFilter(TestResultType.All)} className={typeState === TestResultType.All ? "selected-filter":""}>
+          <Card bordered={false} onClick={()=> setFilter(TestResultType.All)} className={props.type === TestResultType.All ? "selected-filter":""}>
             <Statistic
                 title="Total"
                 value={props.scenarios.length}
                 precision={0}
-                valueStyle={{ color: '#0000FF' }}
+                valueStyle={{ color: '#344054' }}
             />
           </Card>
         </Col>
         <Col span={8}>
-          <Card bordered={false} onClick={()=> setFilter(TestResultType.Success)} className={typeState === TestResultType.Success ? "selected-filter":""}>
+          <Card bordered={false} onClick={()=> setFilter(TestResultType.Success)} className={props.type === TestResultType.Success ? "selected-filter":""}>
             <Statistic
                 title="Success"
                 value={success}
                 precision={0}
-                valueStyle={{ color: '#3f8600' }}
+                valueStyle={{ color: '#15803d' }}
             />
           </Card>
         </Col>
         <Col span={8}>
-          <Card bordered={false} onClick={()=> setFilter(TestResultType.Failed)} className={typeState === TestResultType.Failed ? "selected-filter":""}>
+          <Card bordered={false} onClick={()=> setFilter(TestResultType.Failed)} className={props.type === TestResultType.Failed ? "selected-filter":""}>
             <Statistic
                 title="Failed"
                 value={failed}
                 precision={0}
-                valueStyle={{ color: '#cf1322' }}
+                valueStyle={{ color: '#b42318' }}
             />
           </Card>
         </Col>
@@ -164,43 +169,67 @@ export function StatisticsCtr(props: {scenarios:Scenario[], onSetFilter: (type:T
 export function StepCtr(props: {data:Step, prefix:string}) {
   const globalServices = useContext(GlobalServicesContext);
   const scenarioFile = globalServices.pathResolver(props.data);
+  const executionTime = formatExecutionTime(props.data.ExecutionTime);
   return (
-      <> <span style={{color:"blue"}}>Step {props.prefix}:</span> <a href={scenarioFile} target="_blank" rel="noreferrer">{props.data.Description}</a>
+      <div className="step-content">
+        <div className="step-heading">
+          <span><span className="step-number">Step {props.prefix}:</span> <a href={scenarioFile} target="_blank" rel="noreferrer">{props.data.Description}</a></span>
+          {executionTime && <span className="execution-time" title={`Execution time: ${props.data.ExecutionTime}`}><ClockCircleOutlined /> {executionTime}</span>}
+        </div>
 
           {props.data.Exception != null && (
-              <pre style={{wordWrap: "break-word", whiteSpace: "pre-wrap", overflowX: "auto", padding:10, border: "1px solid red", borderRadius: 5}}><code>
+              <pre className="exception-block"><code>
               {props.data.Exception}
           </code></pre>
           )}
 
-        {props.data.SubSteps && <Timeline style={{marginTop:"10px", paddingBottom:0}}
+        {props.data.SubSteps && props.data.SubSteps.length > 0 && <Timeline style={{marginTop:"10px", paddingBottom:0}}
             mode={"left"}
             items={ props.data.SubSteps.map((value, index) => ({
-                dot: value.Status === 3 ? (<CheckCircleOutlined style={{color:"green"}} />) :<CloseCircleOutlined style={{color:"red"}}/>,
+                dot: value.Status === 3 ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
                 children: (<StepCtr data={value} prefix={`${props.prefix}.${index+1}`} />)}))
             }
         />}
-      </>
+      </div>
   );
+}
+
+function formatExecutionTime(value: string): string {
+  if (!value) return "";
+
+  const parts = value.split(':');
+  if (parts.length !== 3) return value;
+
+  const totalSeconds = Number(parts[0]) * 3600 + Number(parts[1]) * 60 + Number(parts[2]);
+  if (!Number.isFinite(totalSeconds)) return value;
+  if (totalSeconds < 0.001) return `${Math.max(1, Math.round(totalSeconds * 1_000_000))} µs`;
+  if (totalSeconds < 1) return `${Number((totalSeconds * 1000).toFixed(totalSeconds < 0.01 ? 2 : 1))} ms`;
+  if (totalSeconds < 60) return `${Number(totalSeconds.toFixed(2))} s`;
+
+  const minutes = Math.floor(totalSeconds / 60);
+  return `${minutes}m ${Number((totalSeconds % 60).toFixed(1))}s`;
 }
 export function ScenarioTitleCtr(props: {data:Scenario}) {
     const globalServices = useContext(GlobalServicesContext);
     const scenarioFile = globalServices.pathResolver(props.data);
     return (
-        <div>
-            <span style={{paddingRight: 10}}> {props.data.Status === 0 ? (<CheckCircleOutlined style={{color:"green"}} />) :<CloseCircleOutlined style={{color:"red"}} />}</span>
-            <span>SCENARIO: </span><span><a rel="noreferrer" href={scenarioFile} target="_blank">{props.data.ScenarioTitle}</a></span>
+        <div className="scenario-heading">
+            <span className="scenario-status">{props.data.Status === 0 ? <CheckCircleOutlined /> : <CloseCircleOutlined />}</span>
+            <span className="scenario-heading-text">
+                <span><span className="scenario-label">SCENARIO:</span> {props.data.ScenarioTitle}</span>
+                <span className="scenario-method"><span>Method: </span><a rel="noreferrer" href={scenarioFile} target="_blank">{props.data.MethodName}</a></span>
+            </span>
         </div>
     );
 }
 const ScenarioCtr = React.memo((props: {data:Scenario, isSelected:boolean}) =>{
   return (
-     <Card className={`scenario-${props.data.Status}`}  id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )} style={{width:"100%", border: props.isSelected? "1px solid blue": "1px solid transparent",  transition: "border-color 0.5s ease", marginBottom: "20px" }}>
+     <Card className={`scenario-card scenario-${props.data.Status}${props.isSelected ? " scenario-selected" : ""}`} id={props.data.ScenarioTitle.replace(/\W+/g,"-")} title={(<ScenarioTitleCtr data={props.data} /> )}>
         <Timeline
 style={{paddingBottom:0}}
         mode={"left"}
         items={ props.data.Steps.map((value, index) => ({
-            dot: value.Status === 3 ? (<CheckCircleOutlined style={{color:"green"}} />) :<CloseCircleOutlined style={{color:"red"}} />,
+            dot: value.Status === 3 ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
             children: (<StepCtr data={value} prefix={`${index+1}`} />)}))
         }
         />
@@ -254,13 +283,23 @@ const GlobalServicesContext = React.createContext<GlobalServices>({pathResolver:
 
 function App() {
     const scenarioData = retrieveData();
-    const treeData = generateTableOfContent(scenarioData.Scenarios);
-
     const [scenarioState, setScenarioState] = useState(scenarioData.Scenarios)
-    const [treeState, setTreeState] = useState(treeData)
     const [selectedScenario, setSelectedScenario] = useState("")
     const [sourceControlState, setSourceControlState] = useState(scenarioData.SourceControlInfo)
     const [typeState, setTypeState] = useState(TestResultType.All)
+    const [searchQuery, setSearchQuery] = useState("")
+    const filteredScenarios = useMemo(() => {
+        const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+        return scenarioState.filter(scenario =>
+            (typeState === TestResultType.All ||
+            (typeState === TestResultType.Success && scenario.Status === 0) ||
+            (typeState === TestResultType.Failed && scenario.Status === 1)) &&
+            (!normalizedQuery || [scenario.ScenarioTitle, scenario.MethodName, scenario.FilePath]
+                .some(value => value.toLocaleLowerCase().includes(normalizedQuery)))
+        );
+    }, [scenarioState, typeState, searchQuery]);
+    const treeState = useMemo(() => generateTableOfContent(filteredScenarios), [filteredScenarios]);
+    const filterLabel = typeState === TestResultType.Success ? "Successful" : typeState === TestResultType.Failed ? "Failed" : "All tests";
     let pathResolver = RepoPathResolver.TryToGetPathBuilder(sourceControlState, sourceControlState.RepositoryRootDir)
 
     useEffect( () => {
@@ -271,35 +310,52 @@ function App() {
                 const sampleData : INScenarioData = await  response.json();
                 setScenarioState(sampleData.Scenarios);
                 setSourceControlState(sampleData.SourceControlInfo);
-                setTreeState(generateTableOfContent(sampleData.Scenarios))
             }
         })()
-    });
+    }, []);
 
   return (
     <div className={`App filter-${typeState}`} style={{textAlign:"left", margin:0, padding:0}}>
         <GlobalServicesContext.Provider value={{pathResolver: pathResolver}}>
-        <Row style={{height: "calc(100vh - 10px)", background: "#EFEFEF"}}>
-            <Col span={8}  style={{ height:"100%",  padding:"20px 0 20px 20px", overflowY:"scroll", overflowX:"hidden"}}>
-                <DirectoryTree  multiple   defaultExpandAll={true} treeData={treeState} onSelect={(key, a)=>{
-                    if(a.node.isLeaf && a.node.title != null) {
+        <Row className="report-shell">
+            <Col span={8} className="explorer-panel">
+                <div className="tree-heading">
+                    <strong>Test explorer</strong>
+                </div>
+                <div className="global-filter-panel">
+                    <StatisticsCtr scenarios={scenarioState} type={typeState} onSetFilter={type => { setTypeState(type); setSelectedScenario(""); }} />
+                </div>
+                <div className="scenario-search">
+                    <Input
+                        id="scenario-search-input"
+                        aria-label="Search scenarios by title, method, or file name"
+                        allowClear
+                        prefix={<SearchOutlined />}
+                        placeholder="Title, method, or file name…"
+                        value={searchQuery}
+                        onChange={event => { setSearchQuery(event.target.value); setSelectedScenario(""); }}
+                    />
+                    <span className="search-result-count">{filterLabel} · {filteredScenarios.length} shown{searchQuery.trim() ? " · search active" : ""}</span>
+                </div>
+                {treeState.length > 0 ? <DirectoryTree className="test-tree" multiple defaultExpandAll={true} treeData={treeState} onSelect={(key, a)=>{
+                    const scenarioTitle = (a.node as ScenarioTreeNode).scenarioTitle;
+                    if(a.node.isLeaf && scenarioTitle) {
 
-                        document.location = "#" + a.node.title.toString().replace(/\W+/g,"-")
-                        setSelectedScenario(a.node.title.toString());
+                        document.location = "#" + scenarioTitle.replace(/\W+/g,"-")
+                        setSelectedScenario(scenarioTitle);
                     }
                 }}
-                />
+                /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={searchQuery.trim() ? "No scenarios match your search" : "No tests match this filter"} />}
             </Col>
-            <Col span={16} style={{height: "100%"}}>
-                <Row justify={"center"} style={{height: "150px", padding: "20px 20px 20px 10px"}}>
-                    <StatisticsCtr scenarios={scenarioState}  onSetFilter={type => { setTypeState(type) }} />
-                </Row>
-                <Row style={{ height:"calc(100% - 200px)", padding:"0px 20px 20px 20px", overflowY: "scroll"}}>
-                    {scenarioState.map(value => <ScenarioCtr data={value} isSelected={selectedScenario === value.ScenarioTitle} />)}
+            <Col span={16} className="details-panel">
+                <Row className="report-list" style={{ height:"calc(100% - 50px)", padding:"20px", overflowY: "scroll"}}>
+                    {filteredScenarios.length > 0
+                        ? filteredScenarios.map(value => <ScenarioCtr key={`${value.FilePath}-${value.MethodName}`} data={value} isSelected={selectedScenario === value.ScenarioTitle} />)
+                        : <Empty className="report-empty" description={searchQuery.trim() ? "No scenarios match your search" : "No tests match this filter"} />}
                 </Row>
                 <Row align={"bottom"} style={{height:"50px", }}>
                     <Col span={24} style={{textAlign:"center", padding: "20px"}}>
-                        <a href="https://github.com/cezarypiatek/NScenario" target="_blank" rel="noreferrer">NScenario</a> ©2023 Created by <a href="https://cezarypiatek.github.io/" target="_blank" rel="noreferrer">Cezary Piątek</a>
+                        <a href="https://github.com/cezarypiatek/NScenario" target="_blank" rel="noreferrer">NScenario</a> ©2026 Created by <a href="https://cezarypiatek.github.io/" target="_blank" rel="noreferrer">Cezary Piątek</a>
                     </Col>
                 </Row>
             </Col>
