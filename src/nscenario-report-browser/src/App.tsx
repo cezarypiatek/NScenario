@@ -61,9 +61,30 @@ function getDirectoryPath(filePath:string) {
 
 interface ScenarioTreeNode extends DataNode {
   scenarioTitle?: string;
+  displayName?: string;
 }
 
-function createDirectoryTree(scenarios: Scenario[], prefix: string): DataNode[] {
+function highlightSearchMatch(value: string, query: string): React.ReactNode {
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  if (!normalizedQuery) return value;
+
+  const normalizedValue = value.toLocaleLowerCase();
+  const parts: React.ReactNode[] = [];
+  let startIndex = 0;
+  let matchIndex = normalizedValue.indexOf(normalizedQuery);
+
+  while (matchIndex !== -1) {
+    if (matchIndex > startIndex) parts.push(value.slice(startIndex, matchIndex));
+    parts.push(<mark className="tree-search-highlight" key={matchIndex}>{value.slice(matchIndex, matchIndex + query.trim().length)}</mark>);
+    startIndex = matchIndex + query.trim().length;
+    matchIndex = normalizedValue.indexOf(normalizedQuery, startIndex);
+  }
+
+  if (startIndex < value.length) parts.push(value.slice(startIndex));
+  return parts.length > 0 ? parts : value;
+}
+
+function createDirectoryTree(scenarios: Scenario[], prefix: string, searchQuery: string): DataNode[] {
   const root: DataNode[] = [];
   scenarios.forEach(scenario => {
     const parts = scenario.FilePath.substring(prefix.length).split(/\\|\//).filter(item => item !== '');
@@ -72,10 +93,15 @@ function createDirectoryTree(scenarios: Scenario[], prefix: string): DataNode[] 
     // Iterate over parts except the last one (file name)
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      let existingPath = currentLevel.find(p => p.title === part);
+      let existingPath = currentLevel.find(p => (p as ScenarioTreeNode).displayName === part);
 
       if (!existingPath) {
-        existingPath = { title: part, key: parts.slice(0, i + 1).join('/'), children: [] };
+        existingPath = {
+          title: highlightSearchMatch(part, searchQuery),
+          displayName: part,
+          key: parts.slice(0, i + 1).join('/'),
+          children: []
+        } as ScenarioTreeNode;
         currentLevel.push(existingPath);
       }
 
@@ -84,16 +110,21 @@ function createDirectoryTree(scenarios: Scenario[], prefix: string): DataNode[] 
 
     // Handle the file node
     const fileName = parts[parts.length - 1];
-    let fileNode = currentLevel.find(node => node.title === fileName);
+    let fileNode = currentLevel.find(node => (node as ScenarioTreeNode).displayName === fileName);
     if (!fileNode) {
-      fileNode = { title: fileName, key: parts.join('/'), children: [] };
+      fileNode = {
+        title: highlightSearchMatch(fileName, searchQuery),
+        displayName: fileName,
+        key: parts.join('/'),
+        children: []
+      } as ScenarioTreeNode;
       currentLevel.push(fileNode);
     }
 
     // Add ScenarioTitle as a child of the file node, if it doesn't already exist
     if (!fileNode.children!.some(child => (child as ScenarioTreeNode).scenarioTitle === scenario.ScenarioTitle)) {
       fileNode.children!.push({
-          title: <span className="scenario-tree-result"><span>{scenario.ScenarioTitle}</span><small>Method: {scenario.MethodName}</small></span>,
+          title: <span className="scenario-tree-result"><span>{highlightSearchMatch(scenario.ScenarioTitle, searchQuery)}</span><small>Method:{'\u00a0'}<span className="scenario-tree-method-value">{highlightSearchMatch(scenario.MethodName, searchQuery)}</span></small></span>,
           key: `${fileNode.key}/${scenario.ScenarioTitle}`,
           scenarioTitle: scenario.ScenarioTitle,
           isLeaf: true,
@@ -318,11 +349,11 @@ style={{paddingBottom:0}}
   );
 });
 
-function generateTableOfContent(data:Scenario[])
+function generateTableOfContent(data:Scenario[], searchQuery: string)
 {
     const dirPaths : string[] =  data.map(d => getDirectoryPath(d.FilePath))
     const rootDir = findLongestCommonPrefix(dirPaths);
-    return createDirectoryTree(data, rootDir);
+    return createDirectoryTree(data, rootDir, searchQuery);
 }
 
 function retrieveData(): INScenarioData
@@ -363,7 +394,7 @@ const GlobalServicesContext = React.createContext<GlobalServices>({pathResolver:
 
 
 function App() {
-    const scenarioData = retrieveData();
+    const [scenarioData] = useState(retrieveData);
     const [scenarioState, setScenarioState] = useState(scenarioData.Scenarios)
     const [selectedScenario, setSelectedScenario] = useState("")
     const [sourceControlState, setSourceControlState] = useState(scenarioData.SourceControlInfo)
@@ -379,7 +410,7 @@ function App() {
                 .some(value => value.toLocaleLowerCase().includes(normalizedQuery)))
         );
     }, [scenarioState, typeState, searchQuery]);
-    const treeState = useMemo(() => generateTableOfContent(filteredScenarios), [filteredScenarios]);
+    const treeState = useMemo(() => generateTableOfContent(filteredScenarios, searchQuery), [filteredScenarios, searchQuery]);
     const filterLabel = typeState === TestResultType.Success ? "Successful" : typeState === TestResultType.Failed ? "Failed" : "All tests";
     let pathResolver = RepoPathResolver.TryToGetPathBuilder(sourceControlState, sourceControlState.RepositoryRootDir)
 
@@ -393,7 +424,7 @@ function App() {
                 setSourceControlState(sampleData.SourceControlInfo);
             }
         })()
-    }, []);
+    }, [scenarioData.Scenarios.length]);
 
   return (
     <div className={`App filter-${typeState}`} style={{textAlign:"left", margin:0, padding:0}}>

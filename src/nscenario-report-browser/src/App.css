@@ -40,3 +40,10 @@
 .ant-timeline-item:last-of-type{
   padding-bottom: 0!important;
 }
+
+.tree-search-highlight {
+  padding: 0;
+  color: inherit;
+  background: #ffe58f;
+  border-radius: 2px;
+}
