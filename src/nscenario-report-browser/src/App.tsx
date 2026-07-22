@@ -223,6 +223,63 @@ export function TimelineBar(props: {executionTimeMs: number, startTimeMs: number
   );
 }
 
+interface CallStackFrame {
+  indentation: string;
+  methodName: string;
+  filePath: string;
+  lineNumber: number;
+}
+
+function parseCallStackFrame(line: string): CallStackFrame | null {
+  const match = /^(\s*at\s+)(.+?)(\s+in\s+)(.+):line\s+(\d+)\s*$/.exec(line);
+  if (!match) return null;
+
+  return {
+    indentation: match[1],
+    methodName: match[2],
+    filePath: match[4],
+    lineNumber: Number(match[5])
+  };
+}
+
+export function ExceptionCtr(props: {exception: string}) {
+  const globalServices = useContext(GlobalServicesContext);
+  const [isFormatted, setIsFormatted] = useState(true);
+  const exceptionLines = props.exception.split(/\r\n|\n|\r/);
+  const hasCallStackFrames = exceptionLines.some(line => parseCallStackFrame(line) !== null);
+
+  const formattedException = exceptionLines.map((line, index, lines) => {
+    const frame = parseCallStackFrame(line);
+    const lineBreak = index < lines.length - 1 ? '\n' : '';
+
+    if (!frame) return <React.Fragment key={index}>{line}{lineBreak}</React.Fragment>;
+
+    const fileUrl = globalServices.pathResolver({
+      FilePath: frame.filePath,
+      LineNumber: frame.lineNumber
+    });
+
+    return (
+      <React.Fragment key={index}>
+        {frame.indentation}<a href={fileUrl} target="_blank" rel="noreferrer" title={`in ${frame.filePath}:line ${frame.lineNumber}`}>{frame.methodName}</a>
+        {lineBreak}
+      </React.Fragment>
+    );
+  });
+
+  return (
+    <div className={`exception-container${hasCallStackFrames ? ' has-call-stack' : ''}`}>
+      {hasCallStackFrames && <div className="call-stack-view-toggle" role="group" aria-label="Call stack view">
+        <button type="button" aria-pressed={isFormatted} onClick={() => setIsFormatted(true)}>Formatted</button>
+        <button type="button" aria-pressed={!isFormatted} onClick={() => setIsFormatted(false)}>Raw</button>
+      </div>}
+      <pre className="exception-block"><code>
+        {isFormatted ? formattedException : props.exception}
+      </code></pre>
+    </div>
+  );
+}
+
 export function StepCtr(props: {data:Step, prefix:string, startTimeMs?: number, totalDurationMs?: number}) {
   const globalServices = useContext(GlobalServicesContext);
   const scenarioFile = globalServices.pathResolver(props.data);
@@ -256,11 +313,7 @@ export function StepCtr(props: {data:Step, prefix:string, startTimeMs?: number, 
           />
         )}
 
-          {props.data.Exception != null && (
-              <pre className="exception-block"><code>
-              {props.data.Exception}
-          </code></pre>
-          )}
+        {props.data.Exception != null && <ExceptionCtr exception={props.data.Exception} />}
 
         {props.data.SubSteps && props.data.SubSteps.length > 0 && <Timeline style={{marginTop:"10px", paddingBottom:0}}
             mode={"left"}

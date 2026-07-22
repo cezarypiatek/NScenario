@@ -377,6 +377,59 @@ code {
   word-wrap: break-word;
 }
 
+.exception-container {
+  margin: 12px 0 4px;
+  position: relative;
+}
+
+.exception-container .exception-block {
+  margin: 0;
+}
+
+.exception-container.has-call-stack .exception-block {
+  padding-top: 40px;
+}
+
+.exception-block a {
+  font-weight: 600;
+}
+
+.call-stack-view-toggle {
+  background: #fbe9e7;
+  border: 1px solid #e7b6b0;
+  border-radius: 6px;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 1;
+}
+
+.call-stack-view-toggle button {
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: #7a271a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  line-height: 20px;
+  padding: 0 7px;
+}
+
+.call-stack-view-toggle button[aria-pressed="true"] {
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(122, 39, 26, .16);
+  font-weight: 600;
+}
+
+.call-stack-view-toggle button:focus-visible {
+  outline: 2px solid #3659b5;
+  outline-offset: 1px;
+}
+
 .report-empty {
   margin: auto;
 }
