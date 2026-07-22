@@ -11,7 +11,7 @@ interface ISourceControlPathBuilderFactory {
 
 class GithubPathBuilderFactory implements ISourceControlPathBuilderFactory {
     public TryToBuild(sourceControlInfo: SourceControlInfo): SourceControlPathBuilder | null {
-        const httpPattern = new RegExp(`https?://github\\.com/(?<user>[^/]+)/(?<repo>[^/]+)`);
+        const httpPattern = new RegExp(`https?://github\\.com/(?<user>[^/]+)/(?<repo>[^/]+)(?:\.git)`);
         const httpMatch = httpPattern.exec(sourceControlInfo.RepositoryUrl || "");
         if (httpMatch && httpMatch.groups ) {
             return (filePath, line) => `https://github.com/${httpMatch.groups?.['user']}/${httpMatch.groups?.['repo']}/blob/${sourceControlInfo.Revision}/${filePath}#L${line}`;
